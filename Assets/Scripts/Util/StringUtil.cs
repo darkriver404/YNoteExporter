@@ -45,7 +45,7 @@ namespace OrgDay.Util
         public static bool IsJsonStr(string str)
         {
             //TODO
-            throw new NotImplementedException();
+            throw Exceptions.NotImplement;
         }
 
         /// <summary>

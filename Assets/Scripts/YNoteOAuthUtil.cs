@@ -18,11 +18,11 @@ interface IOAuthUtil
     IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result);
 }
 
-public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
+public class YNoteOAuthUtil : IOAuthUtil
 {
     public IEnumerator GetServerTime(Action<string> result)
     {
-        string url = GetURL("http://[baseURL]/oauth/time");
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/time");
         Log.send(url);
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.Send();
@@ -44,18 +44,18 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         string timeStamp = GenerateTimeStampSec();
         string nonce = GenerateNonce();
         string ver = "1.0";
-        string signature = GenerateOAuthSignature(http, consumerKey, consumerSecret, callback, method, timeStamp, nonce, ver);
+        string signature = GenerateOAuthSignature(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, callback, method, timeStamp, nonce, ver);
 
         Dictionary<string, string> content = new Dictionary<string, string>();
         content.Add("oauth_callback", callback); // 回调 url
-        content.Add("oauth_consumer_key", consumerKey); // consumerKey
+        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
         content.Add("oauth_nonce", nonce); // 随机串
         content.Add("oauth_signature_method", method); // 签名方法
         content.Add("oauth_timestamp", timeStamp); // 时间戳
         content.Add("oauth_version", ver); // oauth 版本
         content.Add("oauth_signature", signature); // 签名
 
-        string url = GetURL("http://[baseURL]/oauth/request_token");
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/request_token");
         Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();
@@ -130,7 +130,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         header.Append("&");
 
         //2 URI路径进行URL编码
-        string url = GetURL("http://[baseURL]/oauth/request_token");
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/request_token");
         //Log.d("url", url);
         string encoded_url = Uri.EscapeDataString(url);
         //Log.d("encoded_url", encoded_url);
@@ -209,7 +209,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
 
     public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
     {
-        string url = GetURL("http://[baseURL]/oauth/authorize") + "?oauth_token="+oauth_token;
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/authorize") + "?oauth_token="+oauth_token;
         Log.send(url);
         Application.OpenURL(url);
         UnityWebRequest www = UnityWebRequest.Get(url);
@@ -231,10 +231,10 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         string timeStamp = GenerateTimeStampSec();
         string nonce = GenerateNonce();
         string ver = "1.0";
-        string signature = GenerateOAuthSignature2(http, consumerKey, consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
+        string signature = GenerateOAuthSignature2(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
 
         Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_consumer_key", consumerKey); // consumerKey
+        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
         content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
         content.Add("oauth_verifier", oauth_verifier); // 授权码
         content.Add("oauth_signature_method", method); // 签名方法
@@ -243,7 +243,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         content.Add("oauth_version", ver); // oauth 版本
         content.Add("oauth_signature", signature); // 签名
 
-        string url = GetURL("http://[baseURL]/oauth/access_token");
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/access_token");
         Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();
@@ -289,7 +289,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         header.Append("&");
 
         //2 URI路径进行URL编码
-        string url = GetURL("http://[baseURL]/oauth/access_token");
+        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/access_token");
         //Log.d("url", url);
         string encoded_url = Uri.EscapeDataString(url);
         //Log.d("encoded_url", encoded_url);

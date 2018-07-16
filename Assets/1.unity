@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 997089343}
   - component: {fileID: 997089342}
   m_Layer: 0
-  m_Name: Exporter
+  m_Name: YNoteExporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,6 +137,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oauthVersion: 0
   environment: 1
+  oauth_token: 
+  oauth_token_secret: 
+  oauth_verifier: 
 --- !u!4 &997089343
 Transform:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using OrgDay.Util;
 
-public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
+public class YNoteOAuthV2Util : IOAuthUtil
 {
     public IEnumerator GetServerTime(Action<string> result)
     {
@@ -21,7 +21,7 @@ public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
         content.Add("state", "");// state
         content.Add("display", "mobile");// display
 
-        string url = GetURL("https://[baseURL]/oauth/authorize2");
+        string url = YNoteUtil.GetURL("https://[baseURL]/oauth/authorize2");
         Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();

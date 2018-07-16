@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography;
 
@@ -10,6 +11,10 @@ interface IOAuthUtil
     IEnumerator GetServerTime(Action<string> result);
 
     IEnumerator GetRequestToken(Action<string> result);
+
+    IEnumerator RequestUserLogin(string oauth_token, Action<string> result);
+
+    IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result);
 }
 
 public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
@@ -35,7 +40,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         string http = "POST";
         string callback = "oob";
         string method = "HMAC-SHA1";
-        string timeStamp = GenerateTimeStamp();
+        string timeStamp = GenerateTimeStampSec();
         string nonce = GenerateNonce();
         string ver = "1.0";
         string signature = GenerateOAuthSignature(http, consumerKey, consumerSecret, callback, method, timeStamp, nonce, ver);
@@ -68,9 +73,19 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         get { return ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString(); }
     }
 
-    public static string GenerateTimeStamp()
+    public static string GenerateTimeStampSec()
     {
         return TimeInSecondsSince1970;
+    }
+
+    public static string TimeInMillisecondsSince1970
+    {
+        get { return ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds).ToString(); }
+    }
+
+    public static string GenerateTimeStampMS()
+    {
+        return TimeInMillisecondsSince1970;
     }
 
     public static string GenerateNonce()
@@ -189,5 +204,115 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         HMACSHA1 SHA1 = new HMACSHA1(keyBytes);
         byte[] Hashed = SHA1.ComputeHash(messageBytes);
         return Hashed;
+    }
+
+    public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
+    {
+        string url = GetURL("http://[baseURL]/oauth/authorize") + "?oauth_token="+oauth_token;
+        LogSend(url);
+        Application.OpenURL(url);
+        UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.Send();
+
+        string resultContent = string.Empty;
+        if (!www.isNetworkError)
+        {
+            resultContent = www.downloadHandler.text;
+        }
+        LogRecv(resultContent);
+        //result(resultContent);
+    }
+
+    public IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result)
+    {
+        string http = "POST";
+        string method = "HMAC-SHA1";
+        string timeStamp = GenerateTimeStampSec();
+        string nonce = GenerateNonce();
+        string ver = "1.0";
+        string signature = GenerateOAuthSignature2(http, consumerKey, consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
+
+        Dictionary<string, string> content = new Dictionary<string, string>();
+        content.Add("oauth_consumer_key", consumerKey); // consumerKey
+        content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
+        content.Add("oauth_verifier", oauth_verifier); // 授权码
+        content.Add("oauth_signature_method", method); // 签名方法
+        content.Add("oauth_timestamp", timeStamp); // 时间戳
+        content.Add("oauth_nonce", nonce); // 随机串
+        content.Add("oauth_version", ver); // oauth 版本
+        content.Add("oauth_signature", signature); // 签名
+
+        string url = GetURL("http://[baseURL]/oauth/access_token");
+        LogSend(url, content);
+        UnityWebRequest www = UnityWebRequest.Post(url, content);
+        yield return www.Send();
+
+        string resultContent = string.Empty;
+        if (!www.isNetworkError)
+        {
+            resultContent = www.downloadHandler.text;
+        }
+        LogRecv(resultContent);
+        result(resultContent);
+    }
+
+    public static string GenerateOAuthSignature2(string http, string consumerKey, string consumerSecret, string oauth_token, string oauth_verifier, string oauth_token_secret, string method, string timeStamp, string nonce, string ver)
+    {
+        string baseString = BuildBaseString2(http, consumerKey, oauth_token, oauth_verifier, method, timeStamp, nonce, ver);
+        //Log("baseString", baseString);
+        string key = BuildKey(consumerSecret, oauth_token_secret);
+        //Log("key", key);
+        string signature = BuildSignature(key, baseString);
+        //Log("signature", signature);
+        return signature;
+    }
+
+    /// <summary>
+    /// 1 构造源串
+    /// HTTP请求方式 & urlencode(uri) & urlencode(a=x&b=y&...)
+    /// </summary>
+    /// <param name="http"></param>
+    /// <param name="consumerKey"></param>
+    /// <param name="callback"></param>
+    /// <param name="method"></param>
+    /// <param name="timeStamp"></param>
+    /// <param name="nonce"></param>
+    /// <param name="ver"></param>
+    /// <returns></returns>
+    public static string BuildBaseString2(string http, string consumerKey, string oauth_token, string oauth_verifier, string method, string timeStamp, string nonce, string ver)
+    {
+        StringBuilder header = new StringBuilder();
+
+        //1 大写 HTTP请求方式
+        header.Append(http.ToUpper());
+        header.Append("&");
+
+        //2 URI路径进行URL编码
+        string url = GetURL("http://[baseURL]/oauth/access_token");
+        //Log("url", url);
+        string encoded_url = Uri.EscapeDataString(url);
+        //Log("encoded_url", encoded_url);
+        header.Append(encoded_url);
+        header.Append("&");
+
+        //3 除 oauth_signature 外的所有参数按key进行字典升序排列
+        //  用&拼接起来，并进行URL编码
+        StringBuilder param = new StringBuilder();
+        param.Append("oauth_consumer_key=").Append(consumerKey);
+        param.Append("&").Append("oauth_nonce=").Append(nonce);
+        param.Append("&").Append("oauth_signature_method=").Append(method);
+        param.Append("&").Append("oauth_timestamp=").Append(timeStamp);
+        param.Append("&").Append("oauth_token=").Append(oauth_token);
+        param.Append("&").Append("oauth_verifier=").Append(oauth_verifier);
+        param.Append("&").Append("oauth_version=").Append(ver);
+
+        string paramStr = param.ToString();
+        string encoded_param = Uri.EscapeDataString(paramStr);
+        //Log("paramStr", paramStr);
+        //Log("encoded_param", encoded_param);
+
+        //4 连接起来
+        header.Append(encoded_param);
+        return header.ToString();
     }
 }

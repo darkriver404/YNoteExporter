@@ -30,5 +30,13 @@ public class YNoteExporterEditor : Editor
         {
             Target.RequestToken();
         }
+        if (GUILayout.Button("RequestUserLogin"))
+        {
+            Target.RequestUserLogin();
+        }
+        if (GUILayout.Button("RequestAccessToken"))
+        {
+            Target.RequestAccessToken();
+        }
     }
 }

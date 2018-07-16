@@ -96,3 +96,29 @@ public class TokenErrorData : ResultData
 
     public static readonly string ErrorMark = "oauth_problem";
 }
+
+[Serializable]
+public class UserLoginData : ResultData
+{
+    public string oauth_token;
+    public string oauth_verifier;
+
+    public override void Log()
+    {
+        Debug.Log("oauth_token" + ":" + oauth_token);
+        Debug.Log("oauth_verifier" + ":" + oauth_verifier);
+    }
+}
+
+[Serializable]
+public class AccessTokenData : ResultData
+{
+    public string oauth_token;
+    public string oauth_token_secret;
+
+    public override void Log()
+    {
+        Debug.Log("oauth_token" + ":" + oauth_token);
+        Debug.Log("oauth_token_secret" + ":" + oauth_token_secret);
+    }
+}

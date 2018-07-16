@@ -90,4 +90,3 @@ public class YNoteUtil
         Debug.Log(string.Format("<color={0}>{1}</color> {2}", color, tag, message));
     }
 }
-

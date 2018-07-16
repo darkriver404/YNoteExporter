@@ -33,4 +33,14 @@ public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
         LogRecv(resultContent);
         result(resultContent);
     }
+
+    public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
+    {
+        yield return null;
+    }
+
+    public IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result)
+    {
+        yield return null;
+    }
 }

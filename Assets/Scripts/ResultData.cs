@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using OrgDay.Util;
 
 public class ResultData
 {
-    public virtual void Log()
+    public virtual void LogDebugInfo()
     {
     }
 
@@ -11,18 +12,26 @@ public class ResultData
     {
         if (string.IsNullOrEmpty(result))
         {
-            Debug.LogError("result IsNullOrEmpty!");
+            Log.e("result IsNullOrEmpty!");
             return default(T);
         }
 
         string json = result;
-        if (!YNoteUtil.IsJsonStr(result))
+        if (!StringUtil.IsJsonStrSimple(result))
         {
-            json = YNoteUtil.ResultStr2JsonStr(result);
+            json = StringUtil.OAuthStr2JsonStr(result);
         }
-        T t = JsonUtility.FromJson<T>(json);
-        t.Log();
-        return t;
+        try
+        {
+            T t = JsonUtility.FromJson<T>(json);
+            t.LogDebugInfo();
+            return t;
+        }
+        catch (Exception e)
+        {
+            Log.e(e.Message);
+        }
+        return default(T);
     }
 
     public static bool Create<T1, T2>(string result, string errorStr, out T1 t1, out T2 t2) 
@@ -48,10 +57,10 @@ public class ServerTimeData : ResultData
     public string unit;
     public int oauth_timestamp;
 
-    public override void Log()
+    public override void LogDebugInfo()
     {
-        Debug.Log("unit" + ":" + unit);
-        Debug.Log("oauth_timestamp" + ":" + oauth_timestamp);
+        Log.kvp("unit", unit);
+        Log.kvp("oauth_timestamp" , oauth_timestamp);
     }
 }
 
@@ -62,20 +71,11 @@ public class TokenData : ResultData
     public string oauth_token_secret;
     public string oauth_callback_confirmed;
 
-    public static TokenData CreateFromJSON(string jsonString)
+    public override void LogDebugInfo()
     {
-        if (!YNoteUtil.IsJsonStr(jsonString))
-        {
-            jsonString = YNoteUtil.ResultStr2JsonStr(jsonString);
-        }
-        return JsonUtility.FromJson<TokenData>(jsonString);
-    }
-
-    public override void Log()
-    {
-        Debug.Log("oauth_token" + ":" + oauth_token);
-        Debug.Log("oauth_token_secret" + ":" + oauth_token_secret);
-        Debug.Log("oauth_callback_confirmed" + ":" + oauth_callback_confirmed);
+        Log.kvp("oauth_token" , oauth_token);
+        Log.kvp("oauth_token_secret" , oauth_token_secret);
+        Log.kvp("oauth_callback_confirmed" , oauth_callback_confirmed);
 
     }
 }
@@ -87,11 +87,11 @@ public class TokenErrorData : ResultData
     public string error;
     public string message;
 
-    public override void Log()
+    public override void LogDebugInfo()
     {
-        Debug.Log("oauth_problem" + ":" + oauth_problem);
-        Debug.Log("error" + ":" + error);
-        Debug.Log("message" + ":" + message);
+        Log.kvp("oauth_problem" , oauth_problem);
+        Log.kvp("error" , error);
+        Log.kvp("message" , message);
     }
 
     public static readonly string ErrorMark = "oauth_problem";
@@ -103,10 +103,10 @@ public class UserLoginData : ResultData
     public string oauth_token;
     public string oauth_verifier;
 
-    public override void Log()
+    public override void LogDebugInfo()
     {
-        Debug.Log("oauth_token" + ":" + oauth_token);
-        Debug.Log("oauth_verifier" + ":" + oauth_verifier);
+        Log.kvp("oauth_token" , oauth_token);
+        Log.kvp("oauth_verifier" , oauth_verifier);
     }
 }
 
@@ -116,9 +116,9 @@ public class AccessTokenData : ResultData
     public string oauth_token;
     public string oauth_token_secret;
 
-    public override void Log()
+    public override void LogDebugInfo()
     {
-        Debug.Log("oauth_token" + ":" + oauth_token);
-        Debug.Log("oauth_token_secret" + ":" + oauth_token_secret);
+        Log.kvp("oauth_token" , oauth_token);
+        Log.kvp("oauth_token_secret" , oauth_token_secret);
     }
 }

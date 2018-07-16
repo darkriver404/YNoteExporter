@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using OrgDay.Util;
 
 /// <summary>
 /// OAuth 版本
@@ -84,7 +85,7 @@ public class YNoteExporter : MonoBehaviour
             {
                 oauth_token = data.oauth_token;
                 oauth_token_secret = data.oauth_token_secret;
-                //YNoteUtil.Log("oauth_token", oauth_token);
+                //Log.d("oauth_token", oauth_token);
             }
         }
         else

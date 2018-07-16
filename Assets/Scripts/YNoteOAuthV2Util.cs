@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using OrgDay.Util;
 
 public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
 {
@@ -21,7 +22,7 @@ public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
         content.Add("display", "mobile");// display
 
         string url = GetURL("https://[baseURL]/oauth/authorize2");
-        LogSend(url, content);
+        Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();
 
@@ -30,7 +31,7 @@ public class YNoteOAuthV2Util : YNoteUtil, IOAuthUtil
         {
             resultContent = www.downloadHandler.text;
         }
-        LogRecv(resultContent);
+        Log.recv(resultContent);
         result(resultContent);
     }
 

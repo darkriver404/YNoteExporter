@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography;
+using OrgDay.Util;
 
 interface IOAuthUtil
 {
@@ -22,7 +23,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
     public IEnumerator GetServerTime(Action<string> result)
     {
         string url = GetURL("http://[baseURL]/oauth/time");
-        LogSend(url);
+        Log.send(url);
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.Send();
 
@@ -31,7 +32,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         {
             resultContent = www.downloadHandler.text;
         }
-        LogRecv(resultContent);
+        Log.recv(resultContent);
         result(resultContent);
     }
 
@@ -55,7 +56,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         content.Add("oauth_signature", signature); // 签名
 
         string url = GetURL("http://[baseURL]/oauth/request_token");
-        LogSend(url, content);
+        Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();
 
@@ -64,7 +65,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         {
             resultContent = www.downloadHandler.text;
         }
-        LogRecv(resultContent);
+        Log.recv(resultContent);
         result(resultContent);
     }
 
@@ -100,11 +101,11 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
     public static string GenerateOAuthSignature(string http, string consumerKey, string consumerSecret, string callback, string method, string timeStamp, string nonce, string ver)
     {
         string baseString = BuildBaseString(http, consumerKey, callback, method, timeStamp, nonce, ver);
-        //Log("baseString", baseString);
+        //Log.d("baseString", baseString);
         string key = BuildKey(consumerSecret);
-        //Log("key", key);
+        //Log.d("key", key);
         string signature = BuildSignature(key, baseString);
-        //Log("signature", signature);
+        //Log.d("signature", signature);
         return signature;
     }
 
@@ -130,9 +131,9 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
 
         //2 URI路径进行URL编码
         string url = GetURL("http://[baseURL]/oauth/request_token");
-        //Log("url", url);
+        //Log.d("url", url);
         string encoded_url = Uri.EscapeDataString(url);
-        //Log("encoded_url", encoded_url);
+        //Log.d("encoded_url", encoded_url);
         header.Append(encoded_url);
         header.Append("&");
 
@@ -148,8 +149,8 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
 
         string paramStr = param.ToString();
         string encoded_param = Uri.EscapeDataString(paramStr);
-        //Log("paramStr", paramStr);
-        //Log("encoded_param", encoded_param);
+        //Log.d("paramStr", paramStr);
+        //Log.d("encoded_param", encoded_param);
 
         //4 连接起来
         header.Append(encoded_param);
@@ -209,7 +210,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
     public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
     {
         string url = GetURL("http://[baseURL]/oauth/authorize") + "?oauth_token="+oauth_token;
-        LogSend(url);
+        Log.send(url);
         Application.OpenURL(url);
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.Send();
@@ -219,7 +220,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         {
             resultContent = www.downloadHandler.text;
         }
-        LogRecv(resultContent);
+        Log.recv(resultContent);
         //result(resultContent);
     }
 
@@ -243,7 +244,7 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         content.Add("oauth_signature", signature); // 签名
 
         string url = GetURL("http://[baseURL]/oauth/access_token");
-        LogSend(url, content);
+        Log.send(url, content);
         UnityWebRequest www = UnityWebRequest.Post(url, content);
         yield return www.Send();
 
@@ -252,18 +253,18 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
         {
             resultContent = www.downloadHandler.text;
         }
-        LogRecv(resultContent);
+        Log.recv(resultContent);
         result(resultContent);
     }
 
     public static string GenerateOAuthSignature2(string http, string consumerKey, string consumerSecret, string oauth_token, string oauth_verifier, string oauth_token_secret, string method, string timeStamp, string nonce, string ver)
     {
         string baseString = BuildBaseString2(http, consumerKey, oauth_token, oauth_verifier, method, timeStamp, nonce, ver);
-        //Log("baseString", baseString);
+        //Log.d("baseString", baseString);
         string key = BuildKey(consumerSecret, oauth_token_secret);
-        //Log("key", key);
+        //Log.d("key", key);
         string signature = BuildSignature(key, baseString);
-        //Log("signature", signature);
+        //Log.d("signature", signature);
         return signature;
     }
 
@@ -289,9 +290,9 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
 
         //2 URI路径进行URL编码
         string url = GetURL("http://[baseURL]/oauth/access_token");
-        //Log("url", url);
+        //Log.d("url", url);
         string encoded_url = Uri.EscapeDataString(url);
-        //Log("encoded_url", encoded_url);
+        //Log.d("encoded_url", encoded_url);
         header.Append(encoded_url);
         header.Append("&");
 
@@ -308,8 +309,8 @@ public class YNoteOAuthUtil : YNoteUtil, IOAuthUtil
 
         string paramStr = param.ToString();
         string encoded_param = Uri.EscapeDataString(paramStr);
-        //Log("paramStr", paramStr);
-        //Log("encoded_param", encoded_param);
+        //Log.d("paramStr", paramStr);
+        //Log.d("encoded_param", encoded_param);
 
         //4 连接起来
         header.Append(encoded_param);

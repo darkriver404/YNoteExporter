@@ -125,6 +125,8 @@ public class YNoteExporter : MonoBehaviour
         {
             if (data != null)
             {
+                YNoteUtil.access_token = data.oauth_token;
+                YNoteUtil.access_token_secret = data.oauth_token_secret;
             }
         }
         else
@@ -138,9 +140,9 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseUserInfo(string result)
     {
-        AccessTokenData data;
-        TokenErrorData error;
-        if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
+        UserInfoData data;
+        UserInfoErrorData error;
+        if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
         {
             if (data != null)
             {

@@ -42,6 +42,30 @@ public class YNoteOAuthUtil
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(TimeInSecondsSince1970 + TimeInSecondsSince1970 + TimeInSecondsSince1970));
     }
 
+    public static string GenerateQueryString(string url, Dictionary<string, string> content)
+    {
+        //所有参数按key进行字典升序排列
+        List<string> keys = new List<string>();
+        foreach (string key in content.Keys)
+        {
+            keys.Add(key);
+        }
+        keys.Sort();
+
+        //用&拼接起来，并进行URL编码
+        StringBuilder param = new StringBuilder();
+        for (int i = 0; i < keys.Count; i++)
+        {
+            //Log.v(keys[i], content[keys[i]]);
+            if (i != 0)
+            {
+                param.Append("&");
+            }
+            param.Append(keys[i]).Append("=").Append(content[keys[i]]);
+        }
+        return string.Format("{0}?{1}", url, param);
+    }
+
     public static string GenerateOAuthSignature(string http, string url, Dictionary<string, string> content, string consumerSecret, string oauth_token_secret = "" )
     {
         string baseString = BuildBaseString(http, url, content);

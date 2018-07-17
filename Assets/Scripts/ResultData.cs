@@ -125,23 +125,27 @@ public class AccessTokenData : ResultData
 [Serializable]
 public class UserInfoData : ResultData
 {
-    public string user;
-    public long total_size;
-    public long used_size;
-    public long register_time;
-    public long last_login_time;
-    public long last_modify_time;
-    public string default_notebook;
+    public string id;       //用户ID
+    public string user;     //用户名（部分隐藏）
+    public long total_size; //字节
+    public long used_size;  //字节
+    public long register_time; //ms
+    public long last_login_time; //ms
+    public long last_modify_time; //ms
+    public string default_notebook; //默认笔记本 path
+    public bool is_multilevel;
 
     public override void LogDebugInfo()
     {
-        Log.kvp("user", user);
-        Log.kvp("total_size", total_size);
-        Log.kvp("used_size", used_size);
-        Log.kvp("register_time", register_time);
-        Log.kvp("last_login_time", last_login_time);
-        Log.kvp("last_modify_time", last_modify_time);
-        Log.kvp("default_notebook", default_notebook);
+        Log.kvp("用户ID", id);
+        Log.kvp("用户名", user);
+        Log.kvp("总空间大小", CommonUtil.ShowProperSize(total_size));
+        Log.kvp("已使用空间大小", CommonUtil.ShowProperSize(used_size));
+        Log.kvp("注册时间", CommonUtil.ShowFormatTime(register_time));
+        Log.kvp("最后登录时间", CommonUtil.ShowFormatTime(last_login_time));
+        Log.kvp("最后修改时间", CommonUtil.ShowFormatTime(last_modify_time));
+        Log.kvp("默认笔记本", default_notebook);
+        Log.kvp("是否多层级", is_multilevel);
     }
 }
 
@@ -162,4 +166,6 @@ public class UserInfoErrorData : ResultData
         Log.kvp("message", message);
         Log.kvp("objectUser", objectUser);
     }
+
+    public static readonly string ErrorMark = "error";
 }

@@ -37,4 +37,7 @@ public class YNoteUtil
     public static string oauth_token_secret;
     public static string oauth_verifier;
 
+    public static string access_token;
+    public static string access_token_secret;
+
 }

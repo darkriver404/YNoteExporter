@@ -5,13 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using OrgDay.Util;
 
-public class YNoteOAuthV2Util : IOAuthUtil
+public class YNoteOAuthV2Util
 {
-    public IEnumerator GetServerTime(Action<string> result)
-    {
-        yield return null;
-    }
-
     public IEnumerator GetRequestToken(Action<string> result)
     {
         Dictionary<string, string> content = new Dictionary<string, string>();
@@ -33,15 +28,5 @@ public class YNoteOAuthV2Util : IOAuthUtil
         }
         Log.recv(resultContent);
         result(resultContent);
-    }
-
-    public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
-    {
-        yield return null;
-    }
-
-    public IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result)
-    {
-        yield return null;
     }
 }

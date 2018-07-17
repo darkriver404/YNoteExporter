@@ -76,7 +76,6 @@ public class TokenData : ResultData
         Log.kvp("oauth_token" , oauth_token);
         Log.kvp("oauth_token_secret" , oauth_token_secret);
         Log.kvp("oauth_callback_confirmed" , oauth_callback_confirmed);
-
     }
 }
 

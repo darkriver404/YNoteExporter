@@ -32,4 +32,9 @@ public class YNoteUtil
         }
         return url.Replace("[baseURL]", baseUrl);
     }
+
+    public static string oauth_token;
+    public static string oauth_token_secret;
+    public static string oauth_verifier;
+
 }

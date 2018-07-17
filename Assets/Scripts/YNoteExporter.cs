@@ -26,7 +26,7 @@ public class YNoteExporter : MonoBehaviour
     public OAuthVersion oauthVersion;
     public EnvironmentType environment;
 
-    private IOAuthUtil util;
+    //private IOAuthUtil util;
 
     private int oauth_timestamp;
     public string oauth_token;
@@ -35,20 +35,20 @@ public class YNoteExporter : MonoBehaviour
 
     void Start()
     {
-        switch (oauthVersion)
-        {
-            case OAuthVersion.oauth_1_0_a:
-                util = new YNoteOAuthUtil();
-                break;
-            case OAuthVersion.oauth_2_0:
-                util = new YNoteOAuthV2Util();
-                break;
-        }
+        //switch (oauthVersion)
+        //{
+        //    case OAuthVersion.oauth_1_0_a:
+        //        util = new YNoteOAuthUtil();
+        //        break;
+        //    case OAuthVersion.oauth_2_0:
+        //        util = new YNoteOAuthV2Util();
+        //        break;
+        //}
     }
 
     void Update()
     {
-
+        YNoteUtil.oauth_verifier = oauth_verifier;
     }
 
     public void UpdateEnvironment()
@@ -58,12 +58,32 @@ public class YNoteExporter : MonoBehaviour
 
     public void GetServerTime()
     {
-        StartCoroutine(util.GetServerTime(ParseServerTime));
+        YNoteRequestData data = YNoteRequestDataGenerator.GenServerTime(ParseServerTime);
+        YNoteRequestManager.Instance.SendRequest(data);
     }
 
     public void RequestToken()
     {
-        StartCoroutine(util.GetRequestToken(ParseRequestToken));
+        YNoteRequestData data = YNoteRequestDataGenerator.GenRequestToken(ParseRequestToken);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
+    public void RequestUserLogin()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenUserLogin(ParseUserLogin);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
+    public void RequestAccessToken()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenAccessToken(ParseAccessToken);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
+    public void RequestUserInfo()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenUserInfo(ParseUserInfo);
+        YNoteRequestManager.Instance.SendRequest(data);
     }
 
     void ParseServerTime(string result)
@@ -86,6 +106,36 @@ public class YNoteExporter : MonoBehaviour
                 oauth_token = data.oauth_token;
                 oauth_token_secret = data.oauth_token_secret;
                 //Log.d("oauth_token", oauth_token);
+
+                YNoteUtil.oauth_token = data.oauth_token;
+                YNoteUtil.oauth_token_secret = data.oauth_token_secret;
+            }
+        }
+        else
+        {
+            if (error != null)
+            {
+
+            }
+        }
+    }
+    
+    void ParseUserLogin(string result)
+    {
+        UserLoginData data = ResultData.Create<UserLoginData>(result);
+        if (data != null)
+        {
+        }
+    }
+
+    void ParseAccessToken(string result)
+    {
+        AccessTokenData data;
+        TokenErrorData error;
+        if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
+        {
+            if (data != null)
+            {
             }
         }
         else
@@ -97,25 +147,7 @@ public class YNoteExporter : MonoBehaviour
         }
     }
 
-    public void RequestUserLogin()
-    {
-        StartCoroutine(util.RequestUserLogin(oauth_token, ParseUserLogin));
-    }
-
-    void ParseUserLogin(string result)
-    {
-        UserLoginData data = ResultData.Create<UserLoginData>(result);
-        if (data != null)
-        {
-        }
-    }
-
-    public void RequestAccessToken()
-    {
-        StartCoroutine(util.RequestAccessToken(oauth_token, oauth_verifier, oauth_token_secret, ParseAccessToken));
-    }
-
-    void ParseAccessToken(string result)
+    void ParseUserInfo(string result)
     {
         AccessTokenData data;
         TokenErrorData error;

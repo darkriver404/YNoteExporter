@@ -1,74 +1,12 @@
 ﻿using System;
 using System.Text;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Networking;
 using System.Security.Cryptography;
 using OrgDay.Util;
 
-interface IOAuthUtil
+public class YNoteOAuthUtil
 {
-    IEnumerator GetServerTime(Action<string> result);
-
-    IEnumerator GetRequestToken(Action<string> result);
-
-    IEnumerator RequestUserLogin(string oauth_token, Action<string> result);
-
-    IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result);
-}
-
-public class YNoteOAuthUtil : IOAuthUtil
-{
-    public IEnumerator GetServerTime(Action<string> result)
-    {
-        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/time");
-        Log.send(url);
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.Send();
-
-        string resultContent = string.Empty;
-        if (!www.isNetworkError)
-        {
-            resultContent = www.downloadHandler.text;
-        }
-        Log.recv(resultContent);
-        result(resultContent);
-    }
-
-    public IEnumerator GetRequestToken(Action<string> result)
-    {
-        string http = "POST";
-        string callback = "oob";
-        string method = "HMAC-SHA1";
-        string timeStamp = GenerateTimeStampSec();
-        string nonce = GenerateNonce();
-        string ver = "1.0";
-        string signature = GenerateOAuthSignature(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, callback, method, timeStamp, nonce, ver);
-
-        Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_callback", callback); // 回调 url
-        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
-        content.Add("oauth_nonce", nonce); // 随机串
-        content.Add("oauth_signature_method", method); // 签名方法
-        content.Add("oauth_timestamp", timeStamp); // 时间戳
-        content.Add("oauth_version", ver); // oauth 版本
-        content.Add("oauth_signature", signature); // 签名
-
-        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/request_token");
-        Log.send(url, content);
-        UnityWebRequest www = UnityWebRequest.Post(url, content);
-        yield return www.Send();
-
-        string resultContent = string.Empty;
-        if (!www.isNetworkError)
-        {
-            resultContent = www.downloadHandler.text;
-        }
-        Log.recv(resultContent);
-        result(resultContent);
-    }
-
     public static string TimeInSecondsSince1970
     {
         get { return ((int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds).ToString(); }
@@ -207,56 +145,6 @@ public class YNoteOAuthUtil : IOAuthUtil
         return Hashed;
     }
 
-    public IEnumerator RequestUserLogin(string oauth_token, Action<string> result)
-    {
-        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/authorize") + "?oauth_token="+oauth_token;
-        Log.send(url);
-        Application.OpenURL(url);
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.Send();
-
-        string resultContent = string.Empty;
-        if (!www.isNetworkError)
-        {
-            resultContent = www.downloadHandler.text;
-        }
-        Log.recv(resultContent);
-        //result(resultContent);
-    }
-
-    public IEnumerator RequestAccessToken(string oauth_token, string oauth_verifier, string oauth_token_secret, Action<string> result)
-    {
-        string http = "POST";
-        string method = "HMAC-SHA1";
-        string timeStamp = GenerateTimeStampSec();
-        string nonce = GenerateNonce();
-        string ver = "1.0";
-        string signature = GenerateOAuthSignature2(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
-
-        Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
-        content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
-        content.Add("oauth_verifier", oauth_verifier); // 授权码
-        content.Add("oauth_signature_method", method); // 签名方法
-        content.Add("oauth_timestamp", timeStamp); // 时间戳
-        content.Add("oauth_nonce", nonce); // 随机串
-        content.Add("oauth_version", ver); // oauth 版本
-        content.Add("oauth_signature", signature); // 签名
-
-        string url = YNoteUtil.GetURL("http://[baseURL]/oauth/access_token");
-        Log.send(url, content);
-        UnityWebRequest www = UnityWebRequest.Post(url, content);
-        yield return www.Send();
-
-        string resultContent = string.Empty;
-        if (!www.isNetworkError)
-        {
-            resultContent = www.downloadHandler.text;
-        }
-        Log.recv(resultContent);
-        result(resultContent);
-    }
-
     public static string GenerateOAuthSignature2(string http, string consumerKey, string consumerSecret, string oauth_token, string oauth_verifier, string oauth_token_secret, string method, string timeStamp, string nonce, string ver)
     {
         string baseString = BuildBaseString2(http, consumerKey, oauth_token, oauth_verifier, method, timeStamp, nonce, ver);
@@ -315,5 +203,15 @@ public class YNoteOAuthUtil : IOAuthUtil
         //4 连接起来
         header.Append(encoded_param);
         return header.ToString();
+    }
+
+    public static string GetHttpVerbName(HTTPVerb verb)
+    {
+        switch (verb)
+        {
+            default:
+            case HTTPVerb.GET: return UnityWebRequest.kHttpVerbGET;
+            case HTTPVerb.POST: return UnityWebRequest.kHttpVerbPOST;
+        }
     }
 }

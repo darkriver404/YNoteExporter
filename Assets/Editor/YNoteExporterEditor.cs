@@ -38,5 +38,10 @@ public class YNoteExporterEditor : Editor
         {
             Target.RequestAccessToken();
         }
+
+        if (GUILayout.Button("RequestUserInfo"))
+        {
+            Target.RequestUserInfo();
+        }
     }
 }

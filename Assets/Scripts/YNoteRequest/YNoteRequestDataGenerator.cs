@@ -61,17 +61,17 @@ public class YNoteRequestDataGenerator
         string timeStamp = YNoteOAuthUtil.GenerateTimeStampSec();
         string nonce = YNoteOAuthUtil.GenerateNonce();
         string ver = OAUTH_VER;
-        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, callback, method, timeStamp, nonce, ver);
 
-        Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_callback", callback); // 回调 url
-        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
-        content.Add("oauth_nonce", nonce); // 随机串
-        content.Add("oauth_signature_method", method); // 签名方法
-        content.Add("oauth_timestamp", timeStamp); // 时间戳
-        content.Add("oauth_version", ver); // oauth 版本
-        content.Add("oauth_signature", signature); // 签名
-        data.content = content;
+        data.content = new Dictionary<string, string>();
+        data.content.Add("oauth_callback", callback); // 回调 url
+        data.content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
+        data.content.Add("oauth_nonce", nonce); // 随机串
+        data.content.Add("oauth_signature_method", method); // 签名方法
+        data.content.Add("oauth_timestamp", timeStamp); // 时间戳
+        data.content.Add("oauth_version", ver); // oauth 版本
+
+        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret);
+        data.content.Add("oauth_signature", signature); // 签名
 
         return data;
     }
@@ -100,18 +100,19 @@ public class YNoteRequestDataGenerator
         string oauth_token = YNoteUtil.oauth_token;
         string oauth_token_secret = YNoteUtil.oauth_token_secret;
         string oauth_verifier = YNoteUtil.oauth_verifier;
-        string signature = YNoteOAuthUtil.GenerateOAuthSignature2(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
 
-        Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
-        content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
-        content.Add("oauth_verifier", oauth_verifier); // 授权码
-        content.Add("oauth_signature_method", method); // 签名方法
-        content.Add("oauth_timestamp", timeStamp); // 时间戳
-        content.Add("oauth_nonce", nonce); // 随机串
-        content.Add("oauth_version", ver); // oauth 版本
-        content.Add("oauth_signature", signature); // 签名
-        data.content = content;
+        data.content = new Dictionary<string, string>();
+        data.content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
+        data.content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
+        data.content.Add("oauth_verifier", oauth_verifier); // 授权码
+        data.content.Add("oauth_signature_method", method); // 签名方法
+        data.content.Add("oauth_timestamp", timeStamp); // 时间戳
+        data.content.Add("oauth_nonce", nonce); // 随机串
+        data.content.Add("oauth_version", ver); // oauth 版本
+
+        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+        data.content.Add("oauth_signature", signature); // 签名
+
         return data;
     }
 
@@ -129,18 +130,19 @@ public class YNoteRequestDataGenerator
         string oauth_token = YNoteUtil.oauth_token;
         string oauth_token_secret = YNoteUtil.oauth_token_secret;
         string oauth_verifier = YNoteUtil.oauth_verifier;
-        string signature = YNoteOAuthUtil.GenerateOAuthSignature2(http, YNoteUtil.consumerKey, YNoteUtil.consumerSecret, oauth_token, oauth_verifier, oauth_token_secret, method, timeStamp, nonce, ver);
 
-        Dictionary<string, string> content = new Dictionary<string, string>();
-        content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
-        content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
-        content.Add("oauth_verifier", oauth_verifier); // 授权码
-        content.Add("oauth_signature_method", method); // 签名方法
-        content.Add("oauth_timestamp", timeStamp); // 时间戳
-        content.Add("oauth_nonce", nonce); // 随机串
-        content.Add("oauth_version", ver); // oauth 版本
-        content.Add("oauth_signature", signature); // 签名
-        data.content = content;
+        data.content = new Dictionary<string, string>();
+        data.content.Add("oauth_consumer_key", YNoteUtil.consumerKey); // consumerKey
+        data.content.Add("oauth_token", oauth_token); // 请求 request_token 时返回的 oauth_token
+        data.content.Add("oauth_verifier", oauth_verifier); // 授权码
+        data.content.Add("oauth_signature_method", method); // 签名方法
+        data.content.Add("oauth_timestamp", timeStamp); // 时间戳
+        data.content.Add("oauth_nonce", nonce); // 随机串
+        data.content.Add("oauth_version", ver); // oauth 版本
+
+        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret,  oauth_token_secret);
+        data.content.Add("oauth_signature", signature); // 签名
+
         return data;
     }
 }

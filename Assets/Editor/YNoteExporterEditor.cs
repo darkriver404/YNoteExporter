@@ -22,24 +22,25 @@ public class YNoteExporterEditor : Editor
         }
         Target.UpdateEnvironment();
 
-        if (GUILayout.Button("GetServerTime"))
+        if (GUILayout.Button("ServerTime"))
         {
             Target.GetServerTime();
         }
+        //OAuth
         if (GUILayout.Button("RequestToken"))
         {
             Target.RequestToken();
         }
-        if (GUILayout.Button("RequestUserLogin"))
+        if (GUILayout.Button("UserLogin"))
         {
             Target.RequestUserLogin();
         }
-        if (GUILayout.Button("RequestAccessToken"))
+        if (GUILayout.Button("AccessToken"))
         {
             Target.RequestAccessToken();
         }
-
-        if (GUILayout.Button("RequestUserInfo"))
+        //API
+        if (GUILayout.Button("UserInfo"))
         {
             Target.RequestUserInfo();
         }

@@ -55,7 +55,7 @@ public class ResultData
 public class ServerTimeData : ResultData
 {
     public string unit;
-    public int oauth_timestamp;
+    public long oauth_timestamp;
 
     public override void LogDebugInfo()
     {
@@ -83,7 +83,7 @@ public class TokenData : ResultData
 public class TokenErrorData : ResultData
 {
     public string oauth_problem;
-    public string error;
+    public int error;
     public string message;
 
     public override void LogDebugInfo()
@@ -119,5 +119,47 @@ public class AccessTokenData : ResultData
     {
         Log.kvp("oauth_token" , oauth_token);
         Log.kvp("oauth_token_secret" , oauth_token_secret);
+    }
+}
+
+[Serializable]
+public class UserInfoData : ResultData
+{
+    public string user;
+    public long total_size;
+    public long used_size;
+    public long register_time;
+    public long last_login_time;
+    public long last_modify_time;
+    public string default_notebook;
+
+    public override void LogDebugInfo()
+    {
+        Log.kvp("user", user);
+        Log.kvp("total_size", total_size);
+        Log.kvp("used_size", used_size);
+        Log.kvp("register_time", register_time);
+        Log.kvp("last_login_time", last_login_time);
+        Log.kvp("last_modify_time", last_modify_time);
+        Log.kvp("default_notebook", default_notebook);
+    }
+}
+
+[Serializable]
+public class UserInfoErrorData : ResultData
+{
+    public bool canTryAgain;
+    public string scope;
+    public int error;
+    public string message;
+    public string objectUser;
+
+    public override void LogDebugInfo()
+    {
+        Log.kvp("canTryAgain", canTryAgain);
+        Log.kvp("scope", scope);
+        Log.kvp("error", error);
+        Log.kvp("message", message);
+        Log.kvp("objectUser", objectUser);
     }
 }

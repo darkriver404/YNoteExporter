@@ -26,24 +26,13 @@ public class YNoteExporter : MonoBehaviour
     public OAuthVersion oauthVersion;
     public EnvironmentType environment;
 
-    //private IOAuthUtil util;
-
-    private int oauth_timestamp;
+    private long oauth_timestamp;
     public string oauth_token;
     public string oauth_token_secret;
     public string oauth_verifier;
 
     void Start()
     {
-        //switch (oauthVersion)
-        //{
-        //    case OAuthVersion.oauth_1_0_a:
-        //        util = new YNoteOAuthUtil();
-        //        break;
-        //    case OAuthVersion.oauth_2_0:
-        //        util = new YNoteOAuthV2Util();
-        //        break;
-        //}
     }
 
     void Update()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using OrgDay.Util;
 
@@ -8,7 +9,7 @@ public class ResultData
     {
     }
 
-    public static T Create<T>(string result) where T : ResultData
+    public static T Create<T>(string result)
     {
         if (string.IsNullOrEmpty(result))
         {
@@ -24,7 +25,6 @@ public class ResultData
         try
         {
             T t = JsonUtility.FromJson<T>(json);
-            t.LogDebugInfo();
             return t;
         }
         catch (Exception e)
@@ -141,9 +141,9 @@ public class UserInfoData : ResultData
         Log.kvp("用户名", user);
         Log.kvp("总空间大小", CommonUtil.ShowProperSize(total_size));
         Log.kvp("已使用空间大小", CommonUtil.ShowProperSize(used_size));
-        Log.kvp("注册时间", CommonUtil.ShowFormatTime(register_time));
-        Log.kvp("最后登录时间", CommonUtil.ShowFormatTime(last_login_time));
-        Log.kvp("最后修改时间", CommonUtil.ShowFormatTime(last_modify_time));
+        Log.kvp("注册时间", CommonUtil.ShowFormatMS(register_time));
+        Log.kvp("最后登录时间", CommonUtil.ShowFormatMS(last_login_time));
+        Log.kvp("最后修改时间", CommonUtil.ShowFormatMS(last_modify_time));
         Log.kvp("默认笔记本", default_notebook);
         Log.kvp("是否多层级", is_multilevel);
     }
@@ -168,4 +168,25 @@ public class UserInfoErrorData : ResultData
     }
 
     public static readonly string ErrorMark = "error";
+}
+
+[Serializable]
+public class NotebookData : ResultData
+{
+    public string path;
+    public string name;
+    public int notes_num;
+    public string group;//已废弃的笔记本组字段
+    public long create_time;
+    public long modify_time;
+
+    public override void LogDebugInfo()
+    {
+        //Log.kvp("path", path);
+        Log.kvp("name", name);
+        Log.kvp("notes_num", notes_num);
+        //Log.kvp("group", group);
+        Log.kvp("创建时间", CommonUtil.ShowFormatSec(create_time));
+        Log.kvp("修改时间", CommonUtil.ShowFormatSec(modify_time));
+    }
 }

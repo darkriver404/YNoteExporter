@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 using OrgDay.Util;
 
 /// <summary>
@@ -75,23 +76,32 @@ public class YNoteExporter : MonoBehaviour
         YNoteRequestManager.Instance.SendRequest(data);
     }
 
+    public void RequestAllNotebook()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenAllNotebook(ParseAllNotebook);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
     void ParseServerTime(string result)
     {
         ServerTimeData data = ResultData.Create<ServerTimeData>(result);
         if (data != null)
         {
+            data.LogDebugInfo();
             oauth_timestamp = data.oauth_timestamp;
         }
     }
 
     void ParseRequestToken(string result)
     {
+        SaveToFile("request_token", result);
         TokenData data;
         TokenErrorData error;
         if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
         {
             if (data != null)
             {
+                data.LogDebugInfo();
                 oauth_token = data.oauth_token;
                 oauth_token_secret = data.oauth_token_secret;
                 //Log.d("oauth_token", oauth_token);
@@ -104,7 +114,7 @@ public class YNoteExporter : MonoBehaviour
         {
             if (error != null)
             {
-
+                error.LogDebugInfo();
             }
         }
     }
@@ -114,17 +124,20 @@ public class YNoteExporter : MonoBehaviour
         UserLoginData data = ResultData.Create<UserLoginData>(result);
         if (data != null)
         {
+            data.LogDebugInfo();
         }
     }
 
     void ParseAccessToken(string result)
     {
+        SaveToFile("access_token", result);
         AccessTokenData data;
         TokenErrorData error;
         if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
         {
             if (data != null)
             {
+                data.LogDebugInfo();
                 YNoteUtil.access_token = data.oauth_token;
                 YNoteUtil.access_token_secret = data.oauth_token_secret;
             }
@@ -133,27 +146,47 @@ public class YNoteExporter : MonoBehaviour
         {
             if (error != null)
             {
-
+                error.LogDebugInfo();
             }
         }
     }
 
     void ParseUserInfo(string result)
     {
+        SaveToFile("user", result);
         UserInfoData data;
         UserInfoErrorData error;
         if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
         {
             if (data != null)
             {
+                data.LogDebugInfo();
             }
         }
         else
         {
             if (error != null)
             {
-
+                error.LogDebugInfo();
             }
         }
+    }
+
+    void ParseAllNotebook(string result)
+    {
+        SaveToFile("notebooks", result);
+        List<NotebookData> list = JsonConvert.DeserializeObject<List<NotebookData>>(result);
+        if (list != null && list.Count != 0)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i].LogDebugInfo();
+            }
+        }
+    }
+
+    void SaveToFile(string fileName, string text)
+    {
+        System.IO.File.WriteAllText( string.Format("{0}\\Output\\{1}.txt", System.Environment.CurrentDirectory, fileName), text);
     }
 }

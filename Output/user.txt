@@ -1,0 +1,1 @@
+{"canTryAgain":false,"scope":"CLIENT","error":"1007","message":"Message[OAUTH_PROBLEM_EXCEPTION]: signature_invalid","objectUser":null}

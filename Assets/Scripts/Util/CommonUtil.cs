@@ -33,11 +33,18 @@ namespace OrgDay.Util
             return str;
         }
 
-        public static string ShowFormatTime(long time_ms)
+        public static string ShowFormatMS(long time_ms)
         {
             DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1)); // 当地时区
             DateTime dt = startTime.AddMilliseconds(time_ms);
             return dt.ToString("yyyy/MM/dd HH:mm:ss:ffff");
+        }
+
+        public static string ShowFormatSec(long time_sec)
+        {
+            DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1)); // 当地时区
+            DateTime dt = startTime.AddSeconds(time_sec);
+            return dt.ToString("yyyy/MM/dd HH:mm:ss");
         }
     }
 }

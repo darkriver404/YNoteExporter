@@ -1,217 +1,221 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
 using OrgDay.Util;
 
-public class ResultData
+namespace YNote
 {
-    public virtual void LogDebugInfo()
+    public class ResultData
     {
-    }
-
-    public static T Create<T>(string result)
-    {
-        if (string.IsNullOrEmpty(result))
+        public static T Create<T>(string result)
         {
-            Log.e("result IsNullOrEmpty!");
+            if (string.IsNullOrEmpty(result))
+            {
+                Log.e("result IsNullOrEmpty!");
+                return default(T);
+            }
+
+            string json = result;
+            if (!StringUtil.IsJsonStrSimple(result))
+            {
+                json = StringUtil.OAuthStr2JsonStr(result);
+            }
+            try
+            {
+                T t = JsonUtility.FromJson<T>(json);
+                return t;
+            }
+            catch (Exception e)
+            {
+                Log.e(e.Message);
+            }
             return default(T);
         }
 
-        string json = result;
-        if (!StringUtil.IsJsonStrSimple(result))
+        public static bool Create<T1, T2>(string result, string errorStr, out T1 t1, out T2 t2)
         {
-            json = StringUtil.OAuthStr2JsonStr(result);
+            t1 = default(T1);
+            t2 = default(T2);
+
+            if (result.Contains(errorStr))
+            {
+                t2 = Create<T2>(result);
+                return false;
+            }
+            t1 = Create<T1>(result);
+            return true;
         }
-        try
+    }
+
+    [Serializable]
+    public class ServerTimeData
+    {
+        public string unit;
+        public long oauth_timestamp;
+
+        public override string ToString()
         {
-            T t = JsonUtility.FromJson<T>(json);
-            return t;
+            return StringUtil.CombineKVP(
+                "unit", unit,
+                "oauth_timestamp", oauth_timestamp);
         }
-        catch (Exception e)
+    }
+
+    [Serializable]
+    public class TokenData
+    {
+        public string oauth_token;
+        public string oauth_token_secret;
+        public string oauth_callback_confirmed;
+
+        public override string ToString()
         {
-            Log.e(e.Message);
+            return StringUtil.CombineKVP(
+                "oauth_token", oauth_token,
+                "oauth_token_secret", oauth_token_secret,
+                "oauth_callback_confirmed", oauth_callback_confirmed);
         }
-        return default(T);
     }
 
-    public static bool Create<T1, T2>(string result, string errorStr, out T1 t1, out T2 t2) 
-        where T1: ResultData
-        where T2 : ResultData
+    [Serializable]
+    public class TokenErrorData
     {
-        t1 = default(T1);
-        t2 = default(T2);
+        public string oauth_problem;
+        public int error;
+        public string message;
 
-        if (result.Contains(errorStr))
+        public override string ToString()
         {
-            t2 = Create<T2>(result);
-            return false;
+            return StringUtil.CombineKVP(
+                "oauth_problem", oauth_problem,
+                "error", error,
+                "message", message);
         }
-        t1 = Create<T1>(result);
-        return true;
+
+        public static readonly string ErrorMark = "oauth_problem";
     }
-}
 
-[Serializable]
-public class ServerTimeData : ResultData
-{
-    public string unit;
-    public long oauth_timestamp;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class UserLoginData
     {
-        Log.kvp("unit", unit);
-        Log.kvp("oauth_timestamp" , oauth_timestamp);
+        public string oauth_token;
+        public string oauth_verifier;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "oauth_token", oauth_token,
+                "oauth_verifier", oauth_verifier);
+        }
     }
-}
 
-[Serializable]
-public class TokenData : ResultData
-{
-    public string oauth_token;
-    public string oauth_token_secret;
-    public string oauth_callback_confirmed;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class AccessTokenData
     {
-        Log.kvp("oauth_token" , oauth_token);
-        Log.kvp("oauth_token_secret" , oauth_token_secret);
-        Log.kvp("oauth_callback_confirmed" , oauth_callback_confirmed);
+        public string oauth_token;
+        public string oauth_token_secret;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "oauth_token", oauth_token,
+                "oauth_token_secret", oauth_token_secret);
+        }
     }
-}
 
-[Serializable]
-public class TokenErrorData : ResultData
-{
-    public string oauth_problem;
-    public int error;
-    public string message;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class UserInfoData
     {
-        Log.kvp("oauth_problem" , oauth_problem);
-        Log.kvp("error" , error);
-        Log.kvp("message" , message);
+        public string id;       //用户ID
+        public string user;     //用户名（部分隐藏）
+        public long total_size; //字节
+        public long used_size;  //字节
+        public long register_time; //ms
+        public long last_login_time; //ms
+        public long last_modify_time; //ms
+        public string default_notebook; //默认笔记本 path
+        public bool is_multilevel;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "用户ID", id,
+                "用户名", user,
+                "总空间大小", CommonUtil.ShowProperSize(total_size),
+                "已使用空间大小", CommonUtil.ShowProperSize(used_size),
+                "注册时间", CommonUtil.ShowFormatMS(register_time),
+                "最后登录时间", CommonUtil.ShowFormatMS(last_login_time),
+                "最后修改时间", CommonUtil.ShowFormatMS(last_modify_time),
+                "默认笔记本", default_notebook,
+                "是否多层级", is_multilevel);
+        }
     }
 
-    public static readonly string ErrorMark = "oauth_problem";
-}
-
-[Serializable]
-public class UserLoginData : ResultData
-{
-    public string oauth_token;
-    public string oauth_verifier;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class UserInfoErrorData
     {
-        Log.kvp("oauth_token" , oauth_token);
-        Log.kvp("oauth_verifier" , oauth_verifier);
+        public bool canTryAgain;
+        public string scope;
+        public int error;
+        public string message;
+        public string objectUser;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "canTryAgain", canTryAgain,
+                "scope", scope,
+                "error", error,
+                "message", message,
+                "objectUser", objectUser);
+        }
+
+        public static readonly string ErrorMark = "error";
     }
-}
 
-[Serializable]
-public class AccessTokenData : ResultData
-{
-    public string oauth_token;
-    public string oauth_token_secret;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class NotebookData
     {
-        Log.kvp("oauth_token" , oauth_token);
-        Log.kvp("oauth_token_secret" , oauth_token_secret);
+        public string path;
+        public string name;
+        public int notes_num;
+        public string group;//已废弃的笔记本组字段
+        public long create_time;
+        public long modify_time;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                //"path", path,
+                "name", name,
+                "notes_num", notes_num,
+                //"group", group,
+                "创建时间", CommonUtil.ShowFormatSec(create_time),
+                "修改时间", CommonUtil.ShowFormatSec(modify_time));
+        }
     }
-}
 
-[Serializable]
-public class UserInfoData : ResultData
-{
-    public string id;       //用户ID
-    public string user;     //用户名（部分隐藏）
-    public long total_size; //字节
-    public long used_size;  //字节
-    public long register_time; //ms
-    public long last_login_time; //ms
-    public long last_modify_time; //ms
-    public string default_notebook; //默认笔记本 path
-    public bool is_multilevel;
-
-    public override void LogDebugInfo()
+    [Serializable]
+    public class CreateNotebook
     {
-        Log.kvp("用户ID", id);
-        Log.kvp("用户名", user);
-        Log.kvp("总空间大小", CommonUtil.ShowProperSize(total_size));
-        Log.kvp("已使用空间大小", CommonUtil.ShowProperSize(used_size));
-        Log.kvp("注册时间", CommonUtil.ShowFormatMS(register_time));
-        Log.kvp("最后登录时间", CommonUtil.ShowFormatMS(last_login_time));
-        Log.kvp("最后修改时间", CommonUtil.ShowFormatMS(last_modify_time));
-        Log.kvp("默认笔记本", default_notebook);
-        Log.kvp("是否多层级", is_multilevel);
-    }
-}
+        public string path;
+        public long create_time;
+        public long modify_time;
+        public string name;
+        public int notes_num;
 
-[Serializable]
-public class UserInfoErrorData : ResultData
-{
-    public bool canTryAgain;
-    public string scope;
-    public int error;
-    public string message;
-    public string objectUser;
-
-    public override void LogDebugInfo()
-    {
-        Log.kvp("canTryAgain", canTryAgain);
-        Log.kvp("scope", scope);
-        Log.kvp("error", error);
-        Log.kvp("message", message);
-        Log.kvp("objectUser", objectUser);
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "path", path,
+                "name", name,
+                "创建时间", CommonUtil.ShowFormatSec(create_time));
+        }
     }
 
-    public static readonly string ErrorMark = "error";
-}
-
-[Serializable]
-public class NotebookData : ResultData
-{
-    public string path;
-    public string name;
-    public int notes_num;
-    public string group;//已废弃的笔记本组字段
-    public long create_time;
-    public long modify_time;
-
-    public override void LogDebugInfo()
-    {
-        //Log.kvp("path", path);
-        Log.kvp("name", name);
-        Log.kvp("notes_num", notes_num);
-        //Log.kvp("group", group);
-        Log.kvp("创建时间", CommonUtil.ShowFormatSec(create_time));
-        Log.kvp("修改时间", CommonUtil.ShowFormatSec(modify_time));
-    }
-}
-
-[Serializable]
-public class CreateNotebook : ResultData
-{
-    public string path;
-    public long create_time;
-    public long modify_time;
-    public string name;
-    public int notes_num;
-
-    public override void LogDebugInfo()
-    {
-        Log.kvp("path", path);
-        Log.kvp("name", name);
-        Log.kvp("创建时间", CommonUtil.ShowFormatSec(create_time));
-    }
-}
-
-[Serializable]
-public class DeleteNotebook : ResultData
-{
-    public override void LogDebugInfo()
+    [Serializable]
+    public class DeleteNotebook
     {
     }
 }

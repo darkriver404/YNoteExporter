@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using OrgDay.Util;
+using YNote;
 
 /// <summary>
 /// OAuth 版本
@@ -101,7 +102,7 @@ public class YNoteExporter : MonoBehaviour
         ServerTimeData data = ResultData.Create<ServerTimeData>(result);
         if (data != null)
         {
-            data.LogDebugInfo();
+            Log.d("server_time", data.ToString());
             oauth_timestamp = data.oauth_timestamp;
         }
     }
@@ -115,7 +116,7 @@ public class YNoteExporter : MonoBehaviour
         {
             if (data != null)
             {
-                data.LogDebugInfo();
+                Log.d("request_token", data.ToString());
                 oauth_token = data.oauth_token;
                 oauth_token_secret = data.oauth_token_secret;
                 //Log.d("oauth_token", oauth_token);
@@ -128,7 +129,7 @@ public class YNoteExporter : MonoBehaviour
         {
             if (error != null)
             {
-                error.LogDebugInfo();
+                Log.d("error", error.ToString());
             }
         }
     }
@@ -138,7 +139,7 @@ public class YNoteExporter : MonoBehaviour
         UserLoginData data = ResultData.Create<UserLoginData>(result);
         if (data != null)
         {
-            data.LogDebugInfo();
+            Log.d("user_login", data.ToString());
         }
     }
 
@@ -151,7 +152,7 @@ public class YNoteExporter : MonoBehaviour
         {
             if (data != null)
             {
-                data.LogDebugInfo();
+                Log.d("access_token", data.ToString());
                 YNoteUtil.access_token = data.oauth_token;
                 YNoteUtil.access_token_secret = data.oauth_token_secret;
             }
@@ -160,7 +161,7 @@ public class YNoteExporter : MonoBehaviour
         {
             if (error != null)
             {
-                error.LogDebugInfo();
+                Log.d("error", error.ToString());
             }
         }
     }
@@ -174,14 +175,14 @@ public class YNoteExporter : MonoBehaviour
         {
             if (data != null)
             {
-                data.LogDebugInfo();
+                Log.d("user", data.ToString());
             }
         }
         else
         {
             if (error != null)
             {
-                error.LogDebugInfo();
+                Log.d("error", error.ToString());
             }
         }
     }
@@ -194,7 +195,7 @@ public class YNoteExporter : MonoBehaviour
         {
             for (int i = 0; i < list.Count; i++)
             {
-                list[i].LogDebugInfo();
+                Log.d("all_notebooks", list[i].ToString());
             }
         }
     }
@@ -221,14 +222,14 @@ public class YNoteExporter : MonoBehaviour
         {
             if (data != null)
             {
-                data.LogDebugInfo();
+                Log.d("notebook", data.ToString());
             }
         }
         else
         {
             if (error != null)
             {
-                error.LogDebugInfo();
+                Log.d("error", error.ToString());
             }
         }
     }

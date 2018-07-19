@@ -70,5 +70,37 @@ namespace OrgDay.Util
             builder.Append("\"}");
             return builder.ToString();
         }
+
+        public static string CombineKVP(params object[] objs)
+        {
+            if (objs.Length % 2 != 0)
+            {
+                return Combine(objs);
+            }
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < objs.Length; i += 2)
+            {
+                if (i != 0)
+                {
+                    builder.AppendLine();
+                }
+                builder.Append(objs[i]).Append(" : ").Append(objs[i + 1]);
+            }
+            return builder.ToString();
+        }
+
+        public static string Combine(params object[] objs)
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < objs.Length; i++)
+            {
+                if (i != 0)
+                {
+                    builder.Append(" | ");
+                }
+                builder.Append(objs[i]);
+            }
+            return builder.ToString();
+        }
     }
 }

@@ -1,1 +1,1 @@
-{"canTryAgain":false,"scope":"CLIENT","error":"1007","message":"Message[OAUTH_PROBLEM_EXCEPTION]: signature_invalid","objectUser":null}
+{"last_login_time":1531968202911,"default_notebook":"/DD495EE901894117AE23A3EFB921E91A","is_multilevel":true,"last_modify_time":1531968716685,"total_size":26548928800,"id":"f0413ff26a0f581f3b1ea7ad5ae9c9b361200971","used_size":6172043438,"user":"m18***","register_time":1356684780629}

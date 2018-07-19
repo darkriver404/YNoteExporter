@@ -165,4 +165,38 @@ public class YNoteRequestDataGenerator
 
         return data;
     }
+
+    public static YNoteRequestData GenListAllNotes(string notebookPath, Action<string> cb)
+    {
+        YNoteRequestData data = new YNoteRequestData(cb);
+        data.httpVerb = HTTPVerb.POST;
+        data.url = YNoteUtil.GetURL(API_LIST_NOTES);
+
+        AppendOAuthContent(ref data);
+        data.content.Add("notebook", notebookPath);
+
+        string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+        string oauth_token_secret = YNoteUtil.access_token_secret;
+        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+        data.content.Add("oauth_signature", signature); // 签名
+
+        return data;
+    }
+
+    public static YNoteRequestData GenCreateNotebook(string notebookName, Action<string> cb)
+    {
+        YNoteRequestData data = new YNoteRequestData(cb);
+        data.httpVerb = HTTPVerb.POST;
+        data.url = YNoteUtil.GetURL(API_NEW_NOTEBOOK);
+
+        AppendOAuthContent(ref data);
+        data.content.Add("name", notebookName);
+
+        string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+        string oauth_token_secret = YNoteUtil.access_token_secret;
+        string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+        data.content.Add("oauth_signature", signature); // 签名
+
+        return data;
+    }
 }

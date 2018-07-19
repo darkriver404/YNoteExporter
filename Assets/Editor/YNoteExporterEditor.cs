@@ -49,5 +49,14 @@ public class YNoteExporterEditor : Editor
         {
             Target.RequestAllNotebook();
         }
+
+        if (GUILayout.Button("ListAllNotes"))
+        {
+            Target.ListAllNotes();
+        }
+        if (GUILayout.Button("CreateNotebook"))
+        {
+            Target.CreateNotebook();
+        }
     }
 }

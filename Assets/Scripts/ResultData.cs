@@ -190,3 +190,28 @@ public class NotebookData : ResultData
         Log.kvp("修改时间", CommonUtil.ShowFormatSec(modify_time));
     }
 }
+
+[Serializable]
+public class CreateNotebook : ResultData
+{
+    public string path;
+    public long create_time;
+    public long modify_time;
+    public string name;
+    public int notes_num;
+
+    public override void LogDebugInfo()
+    {
+        Log.kvp("path", path);
+        Log.kvp("name", name);
+        Log.kvp("创建时间", CommonUtil.ShowFormatSec(create_time));
+    }
+}
+
+[Serializable]
+public class DeleteNotebook : ResultData
+{
+    public override void LogDebugInfo()
+    {
+    }
+}

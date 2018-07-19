@@ -31,6 +31,8 @@ public class YNoteExporter : MonoBehaviour
     public string oauth_token;
     public string oauth_token_secret;
     public string oauth_verifier;
+    public string notebookPath = @"\5FAD6B8F6CF949B6B9691D3E4C1CA4CE";
+    public string notebookName = "new_notebook";
 
     void Start()
     {
@@ -79,6 +81,18 @@ public class YNoteExporter : MonoBehaviour
     public void RequestAllNotebook()
     {
         YNoteRequestData data = YNoteRequestDataGenerator.GenAllNotebook(ParseAllNotebook);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
+    public void ListAllNotes()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenListAllNotes(SafeNotebookPath(notebookPath), ParseListAllNotes);
+        YNoteRequestManager.Instance.SendRequest(data);
+    }
+
+    public void CreateNotebook()
+    {
+        YNoteRequestData data = YNoteRequestDataGenerator.GenCreateNotebook(SafeNotebookName(notebookName), ParseCreateNotebook);
         YNoteRequestManager.Instance.SendRequest(data);
     }
 
@@ -185,8 +199,56 @@ public class YNoteExporter : MonoBehaviour
         }
     }
 
+    void ParseListAllNotes(string result)
+    {
+        SaveToFile("notes_"+ SafeNotebookPath(notebookPath), result);
+        List<string> list = JsonConvert.DeserializeObject<List<string>>(result);
+        if (list != null && list.Count != 0)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                Log.d(i.ToString(),list[i]);
+            }
+        }
+    }
+
+    void ParseCreateNotebook(string result)
+    {
+        SaveToFile("create_notebook_" + SafeNotebookName(notebookName), result);
+        CreateNotebook data;
+        UserInfoErrorData error;
+        if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
+        {
+            if (data != null)
+            {
+                data.LogDebugInfo();
+            }
+        }
+        else
+        {
+            if (error != null)
+            {
+                error.LogDebugInfo();
+            }
+        }
+    }
+
     void SaveToFile(string fileName, string text)
     {
         System.IO.File.WriteAllText( string.Format("{0}\\Output\\{1}.txt", System.Environment.CurrentDirectory, fileName), text);
+    }
+
+    string SafeNotebookPath(string path)
+    {
+        if(path.StartsWith("\\"))
+        {
+            return path.Substring(1);
+        }
+        return path;
+    }
+
+    string SafeNotebookName(string name)
+    {
+        return name.Replace(" ", "_");
     }
 }

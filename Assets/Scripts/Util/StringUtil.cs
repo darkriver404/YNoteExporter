@@ -32,11 +32,20 @@ namespace OrgDay.Util
         }
 
         /// <summary>
+        /// 简单判断是否为html字符串
+        /// </summary>
+        public static bool IsHtmlStrSimple(string str)
+        {
+            return str.StartsWith("<") && str.EndsWith(">") &&( str.Contains("html") || str.Contains("HTML"));
+        }
+
+        /// <summary>
         /// 简单判断是否为json字符串
         /// </summary>
         public static bool IsJsonStrSimple(string str)
         {
-            return str.StartsWith("{") && str.EndsWith("}") && str.Contains("\"");
+            return (str.Contains("{") && str.Contains("}") && str.Contains("\"") && str.Contains(":"))
+                ||(str.Contains("[") && str.Contains("]") && str.Contains("\"") && str.Contains(","));
         }
 
         /// <summary>

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using OrgDay.Util;
-using YNote;
+using YNote.Data;
+using YNote.Util;
 
 /// <summary>
 /// OAuth 版本
@@ -51,55 +52,46 @@ public class YNoteExporter : MonoBehaviour
 
     public void GetServerTime()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenServerTime(ParseServerTime);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.GetServerTime<ServerTimeData>(ParseServerTime);
     }
 
     public void RequestToken()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenRequestToken(ParseRequestToken);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.GetRequestToken<TokenData>(ParseRequestToken);
     }
 
     public void RequestUserLogin()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenUserLogin(ParseUserLogin);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.UserLogin<UserLoginData>(ParseUserLogin);
     }
 
     public void RequestAccessToken()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenAccessToken(ParseAccessToken);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.GetAccessToken<AccessTokenData>(ParseAccessToken);
     }
 
     public void RequestUserInfo()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenUserInfo(ParseUserInfo);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.GetUserInfo<UserInfoData>(ParseUserInfo);
     }
 
     public void RequestAllNotebook()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenAllNotebook(ParseAllNotebook);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.GetAllNotebook<List<NotebookData>>(ParseAllNotebook);
     }
 
     public void ListAllNotes()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenListAllNotes(SafeNotebookPath(notebookPath), ParseListAllNotes);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.ListAllNotes<List<string>>(SafeNotebookPath(notebookPath), ParseListAllNotes);
     }
 
     public void CreateNotebook()
     {
-        YNoteRequestData data = YNoteRequestDataGenerator.GenCreateNotebook(SafeNotebookName(notebookName), ParseCreateNotebook);
-        YNoteRequestManager.Instance.SendRequest(data);
+        YNoteRequestDataGenerator.CreateNotebook<CreateNotebook>(SafeNotebookName(notebookName), ParseCreateNotebook);
     }
 
-    void ParseServerTime(string result)
+    void ParseServerTime(ServerTimeData data)
     {
-        ServerTimeData data = ResultData.Create<ServerTimeData>(result);
         if (data != null)
         {
             Log.d("server_time", data.ToString());
@@ -107,90 +99,65 @@ public class YNoteExporter : MonoBehaviour
         }
     }
 
-    void ParseRequestToken(string result)
+    void ParseRequestToken(TokenData data)
     {
-        SaveToFile("request_token", result);
-        TokenData data;
-        TokenErrorData error;
-        if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
+        //SaveToFile("request_token", result);
+        if (data != null)
         {
-            if (data != null)
-            {
-                Log.d("request_token", data.ToString());
-                oauth_token = data.oauth_token;
-                oauth_token_secret = data.oauth_token_secret;
-                //Log.d("oauth_token", oauth_token);
+            Log.d("request_token", data.ToString());
+            oauth_token = data.oauth_token;
+            oauth_token_secret = data.oauth_token_secret;
+            //Log.d("oauth_token", oauth_token);
 
-                YNoteUtil.oauth_token = data.oauth_token;
-                YNoteUtil.oauth_token_secret = data.oauth_token_secret;
-            }
-        }
-        else
-        {
-            if (error != null)
-            {
-                Log.d("error", error.ToString());
-            }
+            YNoteUtil.oauth_token = data.oauth_token;
+            YNoteUtil.oauth_token_secret = data.oauth_token_secret;
         }
     }
     
-    void ParseUserLogin(string result)
+    void ParseUserLogin(UserLoginData data)
     {
-        UserLoginData data = ResultData.Create<UserLoginData>(result);
         if (data != null)
         {
             Log.d("user_login", data.ToString());
         }
     }
 
-    void ParseAccessToken(string result)
+    void ParseAccessToken(AccessTokenData data)
     {
-        SaveToFile("access_token", result);
-        AccessTokenData data;
-        TokenErrorData error;
-        if (ResultData.Create(result, TokenErrorData.ErrorMark, out data, out error))
+        //SaveToFile("access_token", result);
+        if (data != null)
         {
-            if (data != null)
-            {
-                Log.d("access_token", data.ToString());
-                YNoteUtil.access_token = data.oauth_token;
-                YNoteUtil.access_token_secret = data.oauth_token_secret;
-            }
-        }
-        else
-        {
-            if (error != null)
-            {
-                Log.d("error", error.ToString());
-            }
+            Log.d("access_token", data.ToString());
+            YNoteUtil.access_token = data.oauth_token;
+            YNoteUtil.access_token_secret = data.oauth_token_secret;
         }
     }
 
-    void ParseUserInfo(string result)
+    void ParseUserInfo(UserInfoData data)
     {
-        SaveToFile("user", result);
-        UserInfoData data;
-        UserInfoErrorData error;
-        if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
-        {
+        //SaveToFile("user", result);
+        //UserInfoData data;
+        //UserInfoErrorData error;
+        //if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
+        //{
             if (data != null)
             {
                 Log.d("user", data.ToString());
             }
-        }
-        else
-        {
-            if (error != null)
-            {
-                Log.d("error", error.ToString());
-            }
-        }
+        //}
+        //else
+        //{
+        //    if (error != null)
+        //    {
+        //        Log.d("error", error.ToString());
+        //    }
+        //}
     }
 
-    void ParseAllNotebook(string result)
+    void ParseAllNotebook(List<NotebookData> list)
     {
-        SaveToFile("notebooks", result);
-        List<NotebookData> list = JsonConvert.DeserializeObject<List<NotebookData>>(result);
+        //SaveToFile("notebooks", result);
+        //List<NotebookData> list = JsonConvert.DeserializeObject<List<NotebookData>>(result);
         if (list != null && list.Count != 0)
         {
             for (int i = 0; i < list.Count; i++)
@@ -200,10 +167,9 @@ public class YNoteExporter : MonoBehaviour
         }
     }
 
-    void ParseListAllNotes(string result)
+    void ParseListAllNotes(List<string> list)
     {
-        SaveToFile("notes_"+ SafeNotebookPath(notebookPath), result);
-        List<string> list = JsonConvert.DeserializeObject<List<string>>(result);
+        //SaveToFile("notes_"+ SafeNotebookPath(notebookPath), result);
         if (list != null && list.Count != 0)
         {
             for (int i = 0; i < list.Count; i++)
@@ -213,24 +179,12 @@ public class YNoteExporter : MonoBehaviour
         }
     }
 
-    void ParseCreateNotebook(string result)
+    void ParseCreateNotebook(CreateNotebook data)
     {
-        SaveToFile("create_notebook_" + SafeNotebookName(notebookName), result);
-        CreateNotebook data;
-        UserInfoErrorData error;
-        if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
+        //SaveToFile("create_notebook_" + SafeNotebookName(notebookName), result);
+        if (data != null)
         {
-            if (data != null)
-            {
-                Log.d("notebook", data.ToString());
-            }
-        }
-        else
-        {
-            if (error != null)
-            {
-                Log.d("error", error.ToString());
-            }
+            Log.d("notebook", data.ToString());
         }
     }
 

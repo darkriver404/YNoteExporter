@@ -1,27 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using OrgDay.Util;
 
-public enum HTTPVerb
+namespace YNote.Util
 {
-    GET, POST
-}
-
-public class YNoteRequestData
-{
-    public string url;
-    public HTTPVerb httpVerb;
-    public Dictionary<string, string> content;
-    public Action<string> cb;
-    public bool needOpenUrl;
-
-    public YNoteRequestData(Action<string> action)
+    public enum HTTPVerb
     {
-        cb = action;
+        GET, POST
     }
 
-    public void LogDebugInfo()
+    public class YNoteRequestData
     {
-        Log.send(url, content);
+        public HTTPVerb httpVerb { get; set; }
+
+        public string url { get; set; }
+
+        public Dictionary<string, string> content { get; set; }
+
+        public bool needOpenUrl { get; set; }
     }
 }

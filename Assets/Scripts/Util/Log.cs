@@ -7,17 +7,17 @@ namespace OrgDay.Util
     /// </summary>
     public partial class Log
     {
-        public static void v(string tag, string message)
+        public static void v(string tag, object message)
         {
             m("white", tag, message);
         }
 
-        public static void d(string tag, string message)
+        public static void d(string tag, object message)
         {
             m("green", tag, message);
         }
 
-        public static void m(string color, string tag, string message)
+        public static void m(string color, string tag, object message)
         {
             Debug.Log(string.Format("<color={0}>{1}</color> {2}", color, tag, message));
         }

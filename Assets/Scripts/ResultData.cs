@@ -4,50 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using OrgDay.Util;
 
-namespace YNote
+namespace YNote.Data
 {
-    public class ResultData
-    {
-        public static T Create<T>(string result)
-        {
-            if (string.IsNullOrEmpty(result))
-            {
-                Log.e("result IsNullOrEmpty!");
-                return default(T);
-            }
-
-            string json = result;
-            if (!StringUtil.IsJsonStrSimple(result))
-            {
-                json = StringUtil.OAuthStr2JsonStr(result);
-            }
-            try
-            {
-                T t = JsonUtility.FromJson<T>(json);
-                return t;
-            }
-            catch (Exception e)
-            {
-                Log.e(e.Message);
-            }
-            return default(T);
-        }
-
-        public static bool Create<T1, T2>(string result, string errorStr, out T1 t1, out T2 t2)
-        {
-            t1 = default(T1);
-            t2 = default(T2);
-
-            if (result.Contains(errorStr))
-            {
-                t2 = Create<T2>(result);
-                return false;
-            }
-            t1 = Create<T1>(result);
-            return true;
-        }
-    }
-
     [Serializable]
     public class ServerTimeData
     {

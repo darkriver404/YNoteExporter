@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
@@ -38,7 +39,27 @@ public class YNoteRequestManager : MonoBehaviour
                 request = UnityWebRequest.Get(data.url);
                 break;
             case HTTPVerb.POST:
-                request = UnityWebRequest.Post(data.url, data.content);
+                {
+                    switch(data.contentType)
+                    {
+                        default:
+                        case HTTPContentType.DEFAULT:
+                        case HTTPContentType.APPLICATION:
+                            request = UnityWebRequest.Post(data.url, data.content);
+                            break;
+                        case HTTPContentType.MULTIPART:
+                            {
+                                List<IMultipartFormSection> multipartFormSections = new List<IMultipartFormSection>();
+                                foreach (var kvp in data.content)
+                                {
+                                    multipartFormSections.Add(new MultipartFormDataSection(kvp.Key, kvp.Value, YNoteOAuthUtil.GetHttpContentType(data.contentType)));
+                                }
+                                request = UnityWebRequest.Post(data.url, multipartFormSections);
+                                request.uploadHandler.contentType = YNoteOAuthUtil.GetHttpContentType(data.contentType);
+                            }
+                            break;
+                    }
+                }
                 break;
         }
         yield return request.Send();

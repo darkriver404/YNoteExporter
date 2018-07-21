@@ -35,6 +35,11 @@ public class YNoteExporter : MonoBehaviour
     public string oauth_verifier;
     public string notebookPath = @"\5FAD6B8F6CF949B6B9691D3E4C1CA4CE";
     public string notebookName = "new_notebook";
+    public string noteContent = "default content";
+    public string notePath;
+    public string noteSource;
+    public string noteAuthor;
+    public string noteTitle;
 
     void Start()
     {
@@ -88,6 +93,31 @@ public class YNoteExporter : MonoBehaviour
     public void CreateNotebook()
     {
         YNoteRequestDataGenerator.CreateNotebook<CreateNotebook>(SafeNotebookName(notebookName), ParseCreateNotebook);
+    }
+
+    public void CreateNote()
+    {
+        YNoteRequestDataGenerator.CreateNote<CreateNote>(noteSource, noteAuthor, noteTitle, noteContent, ParseCreateNote);
+    }
+
+    public void GetNote()
+    {
+        YNoteRequestDataGenerator.GetNote<GetNote>(notePath, ParseGetNote);
+    }
+
+    public void ModifyNote()
+    {
+        YNoteRequestDataGenerator.ModifyNote<ModifyNote>(notePath, noteSource, noteAuthor, noteTitle, noteContent, ParseModifyNote);
+    }
+
+    public void MoveNote()
+    {
+        YNoteRequestDataGenerator.MoveNote<MoveNote>(notePath, SafeNotebookPath(notebookPath), ParseMoveNote);
+    }
+
+    public void ShareNote()
+    {
+        YNoteRequestDataGenerator.PublishNote<ShareNote>(notePath, ParseShareNote);
     }
 
     void ParseServerTime(ServerTimeData data)
@@ -185,6 +215,46 @@ public class YNoteExporter : MonoBehaviour
         if (data != null)
         {
             Log.d("notebook", data.ToString());
+        }
+    }
+
+    void ParseCreateNote(CreateNote data)
+    {
+        if (data != null)
+        {
+            Log.d("CreateNote", data.ToString());
+        }
+    }
+
+    void ParseGetNote(GetNote data)
+    {
+        if (data != null)
+        {
+            Log.d("GetNote", data.ToString());
+        }
+    }
+
+    void ParseModifyNote(ModifyNote data)
+    {
+        if (data != null)
+        {
+            Log.d("ModifyNote", data.ToString());
+        }
+    }
+
+    void ParseMoveNote(MoveNote data)
+    {
+        if (data != null)
+        {
+            Log.d("MoveNote", data.ToString());
+        }
+    }
+
+    void ParseShareNote(ShareNote data)
+    {
+        if (data != null)
+        {
+            Log.d("ShareNote", data.ToString());
         }
     }
 

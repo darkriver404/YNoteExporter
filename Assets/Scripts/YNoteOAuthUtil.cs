@@ -9,6 +9,9 @@ namespace YNote.Util
 {
     public class YNoteOAuthUtil
     {
+        private static readonly string CONTENT_TYPE_APP = "application/x-www-form-urlencoded";
+        private static readonly string CONTENT_TYPE_MULTI = "multipart/form-data";
+
         public static string GetHttpVerbName(HTTPVerb verb)
         {
             switch (verb)
@@ -16,6 +19,17 @@ namespace YNote.Util
                 default:
                 case HTTPVerb.GET: return UnityWebRequest.kHttpVerbGET;
                 case HTTPVerb.POST: return UnityWebRequest.kHttpVerbPOST;
+            }
+        }
+
+        public static string GetHttpContentType(HTTPContentType contentType)
+        {
+            switch (contentType)
+            {
+                default:
+                case HTTPContentType.DEFAULT:
+                case HTTPContentType.APPLICATION: return CONTENT_TYPE_APP;
+                case HTTPContentType.MULTIPART: return CONTENT_TYPE_MULTI;
             }
         }
 

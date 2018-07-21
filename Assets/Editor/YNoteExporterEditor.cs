@@ -27,6 +27,7 @@ public class YNoteExporterEditor : Editor
             Target.GetServerTime();
         }
         //OAuth
+        GUILayout.Label("登录");
         if (GUILayout.Button("RequestToken"))
         {
             Target.RequestToken();
@@ -40,16 +41,16 @@ public class YNoteExporterEditor : Editor
             Target.RequestAccessToken();
         }
         //API
+        GUILayout.Label("用户");
         if (GUILayout.Button("UserInfo"))
         {
             Target.RequestUserInfo();
         }
-
+        GUILayout.Label("笔记本");
         if (GUILayout.Button("AllNotebook"))
         {
             Target.RequestAllNotebook();
         }
-
         if (GUILayout.Button("ListAllNotes"))
         {
             Target.ListAllNotes();
@@ -58,5 +59,27 @@ public class YNoteExporterEditor : Editor
         {
             Target.CreateNotebook();
         }
+        GUILayout.Label("笔记");
+        if (GUILayout.Button("CreateNote"))
+        {
+            Target.CreateNote();
+        }
+        if (GUILayout.Button("GetNote"))
+        {
+            Target.GetNote();
+        }
+        if (GUILayout.Button("ModifyNote"))
+        {
+            Target.ModifyNote();
+        }
+        if (GUILayout.Button("MoveNote"))
+        {
+            Target.MoveNote();
+        }
+        if (GUILayout.Button("ShareNote"))
+        {
+            Target.ShareNote();
+        }
+        GUILayout.Label("附件");
     }
 }

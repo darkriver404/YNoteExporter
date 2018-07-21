@@ -201,5 +201,103 @@ namespace YNote.Util
 
             YNoteRequestManager.Instance.ParseRequest(data, cb);
         }
+
+        public static void CreateNote<T>(string source, string author, string title, string content, Action<T> cb)
+        {
+            var data = new YNoteRequestData();
+            data.httpVerb = HTTPVerb.POST;
+            data.url = YNoteUtil.GetURL(API_NEW_NOTE);
+            data.contentType = HTTPContentType.MULTIPART;
+
+            AppendOAuthContent(ref data);
+
+            string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+            string oauth_token_secret = YNoteUtil.access_token_secret;
+            string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+            data.content.Add("oauth_signature", signature); // 签名
+
+            data.content.Add("source", source);
+            data.content.Add("author", author);
+            data.content.Add("title", title);
+            data.content.Add("content", content);
+
+            YNoteRequestManager.Instance.ParseRequest(data, cb);
+        }
+
+        public static void GetNote<T>(string notePath, Action<T> cb)
+        {
+            var data = new YNoteRequestData();
+            data.httpVerb = HTTPVerb.POST;
+            data.url = YNoteUtil.GetURL(API_GET_NOTE);
+
+            AppendOAuthContent(ref data);
+            data.content.Add("path", notePath);
+
+            string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+            string oauth_token_secret = YNoteUtil.access_token_secret;
+            string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+            data.content.Add("oauth_signature", signature); // 签名
+
+            YNoteRequestManager.Instance.ParseRequest(data, cb);
+        }
+
+        public static void ModifyNote<T>(string notePath, string source, string author, string title, string content, Action<T> cb)
+        {
+            var data = new YNoteRequestData();
+            data.httpVerb = HTTPVerb.POST;
+            data.url = YNoteUtil.GetURL(API_MODIFY_NOTE);
+            data.contentType = HTTPContentType.MULTIPART;
+
+            AppendOAuthContent(ref data);
+
+            string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+            string oauth_token_secret = YNoteUtil.access_token_secret;
+            string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+            data.content.Add("oauth_signature", signature); // 签名
+
+            data.content.Add("path", notePath);
+            data.content.Add("source", source);
+            data.content.Add("author", author);
+            data.content.Add("title", title);
+            data.content.Add("content", content);
+
+            YNoteRequestManager.Instance.ParseRequest(data, cb);
+        }
+
+
+        public static void MoveNote<T>(string notePath, string targetNotebook, Action<T> cb)
+        {
+            var data = new YNoteRequestData();
+            data.httpVerb = HTTPVerb.POST;
+            data.url = YNoteUtil.GetURL(API_MOVE_NOTE);
+
+            AppendOAuthContent(ref data);
+            data.content.Add("path", notePath);
+            data.content.Add("notebook", targetNotebook);
+
+            string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+            string oauth_token_secret = YNoteUtil.access_token_secret;
+            string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+            data.content.Add("oauth_signature", signature); // 签名
+
+            YNoteRequestManager.Instance.ParseRequest(data, cb);
+        }
+
+        public static void PublishNote<T>(string notePath, Action<T> cb)
+        {
+            var data = new YNoteRequestData();
+            data.httpVerb = HTTPVerb.POST;
+            data.url = YNoteUtil.GetURL(API_PUBLISH);
+
+            AppendOAuthContent(ref data);
+            data.content.Add("path", notePath);
+
+            string http = YNoteOAuthUtil.GetHttpVerbName(data.httpVerb);
+            string oauth_token_secret = YNoteUtil.access_token_secret;
+            string signature = YNoteOAuthUtil.GenerateOAuthSignature(http, data.url, data.content, YNoteUtil.consumerSecret, oauth_token_secret);
+            data.content.Add("oauth_signature", signature); // 签名
+
+            YNoteRequestManager.Instance.ParseRequest(data, cb);
+        }
     }
 }

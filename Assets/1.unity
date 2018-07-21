@@ -182,6 +182,11 @@ MonoBehaviour:
   oauth_verifier: 
   notebookPath: \5FAD6B8F6CF949B6B9691D3E4C1CA4CE
   notebookName: new_notebook aaa
+  noteContent: default content
+  notePath: 45B87D65622D4A4382CE9B488BDB2B91
+  noteSource: www
+  noteAuthor: darkriver404
+  noteTitle: helloynote
 --- !u!4 &997089343
 Transform:
   m_ObjectHideFlags: 0

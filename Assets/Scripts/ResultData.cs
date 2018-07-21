@@ -176,4 +176,74 @@ namespace YNote.Data
     public class DeleteNotebook
     {
     }
+
+    [Serializable]
+    public class CreateNote
+    {
+        public string path;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "path", path);
+        }
+    }
+
+    [Serializable]
+    public class GetNote
+    {
+        public string title;
+        public string author;
+        public string source;
+        public long size;
+        public long create_time;
+        public long modify_time;
+        public string content;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "title", title,
+                "author", author,
+                "source", source,
+                "笔记大小", CommonUtil.ShowProperSize(size),
+                "创建时间", CommonUtil.ShowFormatSec(create_time),
+                "修改时间", CommonUtil.ShowFormatSec(modify_time),
+                "content", content);
+        }
+    }
+
+    [Serializable]
+    public class ModifyNote
+    {
+    }
+
+    [Serializable]
+    public class MoveNote
+    {
+        public string path;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "path", path);
+        }
+    }
+
+    [Serializable]
+    public class DeleteNote
+    {
+    }
+
+    [Serializable]
+    public class ShareNote
+    {
+        public string url;
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "url", url);
+        }
+    }
 }

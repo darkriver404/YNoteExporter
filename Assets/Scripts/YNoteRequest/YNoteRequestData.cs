@@ -8,6 +8,11 @@ namespace YNote.Util
         GET, POST
     }
 
+    public enum HTTPContentType
+    {
+        DEFAULT, APPLICATION, MULTIPART
+    }
+
     public class YNoteRequestData
     {
         public HTTPVerb httpVerb { get; set; }
@@ -17,5 +22,7 @@ namespace YNote.Util
         public Dictionary<string, string> content { get; set; }
 
         public bool needOpenUrl { get; set; }
+
+        public HTTPContentType contentType { get; set; }
     }
 }

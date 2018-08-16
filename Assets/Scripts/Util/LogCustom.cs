@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace OrgDay.Util
@@ -8,6 +9,8 @@ namespace OrgDay.Util
     /// </summary>
     public partial class Log
     {
+        public static bool saveToFile = false;
+
         public static void kvp(string key, object value)
         {
             v("", string.Format("{0} : {1}", key, value));
@@ -17,13 +20,10 @@ namespace OrgDay.Util
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("url:").Append(url);
-            if (content != null && content.Count != 0)
+            string temp = StringUtil.GetString(content);
+            if (!string.IsNullOrEmpty(temp))
             {
-                sb.Append("\n");
-                foreach (var kvp in content)
-                {
-                    sb.Append(kvp.Key).Append(":").Append(kvp.Value).Append("\n");
-                }
+                sb.Append("\n").Append(temp);
             }
             send(sb.ToString());
         }
@@ -36,6 +36,14 @@ namespace OrgDay.Util
         public static void recv(string message)
         {
             m("cyan", "receive", message);
+        }
+
+        public static void SaveToFile(string tag, string content)
+        {
+            if (!saveToFile)
+                return;
+            string fileName = string.Format("{0}_{1}", DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff"), tag);
+            System.IO.File.WriteAllText(string.Format("{0}\\Output\\{1}.txt", System.Environment.CurrentDirectory, fileName), content);
         }
     }
 }

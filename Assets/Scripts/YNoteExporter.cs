@@ -7,8 +7,6 @@ using YNote.Data;
 using YNote.Util;
 
 
-
-
 public class YNoteExporter : MonoBehaviour
 {
     private long oauth_timestamp;
@@ -108,7 +106,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseRequestToken(TokenData data)
     {
-        //SaveToFile("request_token", result);
         if (data != null)
         {
             Log.d("request_token", data.ToString());
@@ -131,7 +128,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseAccessToken(AccessTokenData data)
     {
-        //SaveToFile("access_token", result);
         if (data != null)
         {
             Log.d("access_token", data.ToString());
@@ -142,7 +138,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseUserInfo(UserInfoData data)
     {
-        //SaveToFile("user", result);
         //UserInfoData data;
         //UserInfoErrorData error;
         //if (ResultData.Create(result, UserInfoErrorData.ErrorMark, out data, out error))
@@ -163,8 +158,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseAllNotebook(List<NotebookData> list)
     {
-        //SaveToFile("notebooks", result);
-        //List<NotebookData> list = JsonConvert.DeserializeObject<List<NotebookData>>(result);
         if (list != null && list.Count != 0)
         {
             for (int i = 0; i < list.Count; i++)
@@ -176,7 +169,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseListAllNotes(List<string> list)
     {
-        //SaveToFile("notes_"+ SafeNotebookPath(notebookPath), result);
         if (list != null && list.Count != 0)
         {
             for (int i = 0; i < list.Count; i++)
@@ -188,7 +180,6 @@ public class YNoteExporter : MonoBehaviour
 
     void ParseCreateNotebook(CreateNotebook data)
     {
-        //SaveToFile("create_notebook_" + SafeNotebookName(notebookName), result);
         if (data != null)
         {
             Log.d("notebook", data.ToString());
@@ -233,11 +224,6 @@ public class YNoteExporter : MonoBehaviour
         {
             Log.d("ShareNote", data.ToString());
         }
-    }
-
-    void SaveToFile(string fileName, string text)
-    {
-        System.IO.File.WriteAllText( string.Format("{0}\\Output\\{1}.txt", System.Environment.CurrentDirectory, fileName), text);
     }
 
     string SafeNotebookPath(string path)

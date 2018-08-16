@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OrgDay.Util;
 
 namespace YNote.Util
 {
@@ -19,10 +19,20 @@ namespace YNote.Util
 
         public string url { get; set; }
 
-        public Dictionary<string, string> content { get; set; }
-
         public bool needOpenUrl { get; set; }
 
         public HTTPContentType contentType { get; set; }
+
+        public Dictionary<string, string> content { get; set; }
+
+        public override string ToString()
+        {
+            return StringUtil.CombineKVP(
+                "httpVerb", httpVerb,
+                "url", url,
+                "needOpenUrl", needOpenUrl,
+                "contentType", contentType,
+                "content", StringUtil.GetString(content));
+        }
     }
 }

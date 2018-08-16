@@ -10,6 +10,12 @@ public class CreateAsset : Editor
         Create<AppConfig>("Config");
     }
 
+    [MenuItem("Tools/CreateAsset/Config/RuntimeConfig")]
+    static void CreateRuntimeConfig()
+    {
+        Create<RuntimeConfig>("Config");
+    }
+
     static void Create<T>(string folder) where T : ScriptableObject
     {
         string typeName = typeof(T).Name;

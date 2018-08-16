@@ -29,7 +29,8 @@ public class YNoteRequestManager : MonoBehaviour
 
     public IEnumerator SendRequest<T>(YNoteRequestData data, Action<T> cb)
     {
-        Log.send(data.url, data.content);
+        Log.send(data.ToString());
+        Log.SaveToFile("send", data.ToString());
 
         UnityWebRequest request;
         switch (data.httpVerb)
@@ -80,8 +81,7 @@ public class YNoteRequestManager : MonoBehaviour
             Log.d("HttpCode", request.responseCode);
             string text = request.downloadHandler.text;
             byte[] results = request.downloadHandler.data;
-            Log.recv(text);
-
+            response.text = text;
 
             switch (request.responseCode)
             {
@@ -109,9 +109,11 @@ public class YNoteRequestManager : MonoBehaviour
             }
         }
 
+        Log.recv(response.ToString());
+        Log.SaveToFile("recv", response.ToString());
+
         if (defaultCB != null)
         {
-            Log.d("response", response);
             defaultCB(response);
         }
     }

@@ -31,6 +31,20 @@ namespace OrgDay.Util
             return builder.ToString();
         }
 
+        public static string GetString(Dictionary<string, string> content = null)
+        {
+            if (content != null && content.Count != 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var kvp in content)
+                {
+                    sb.Append(kvp.Key).Append(":").Append(kvp.Value).Append("\n");
+                }
+                return sb.ToString();
+            }
+            return string.Empty;
+        }
+
         /// <summary>
         /// 简单判断是否为html字符串
         /// </summary>

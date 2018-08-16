@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.IO;
 using OrgDay.Util;
 
 public class ReadAsset : Editor
@@ -9,6 +8,12 @@ public class ReadAsset : Editor
     static void ReadAppConfig()
     {
         Read<AppConfig>("Config");
+    }
+
+    [MenuItem("Tools/ReadAsset/Config/RuntimeConfig")]
+    static void ReadRuntimeConfig()
+    {
+        Read<RuntimeConfig>("Config");
     }
 
     static void Read<T>(string folder) where T : ScriptableObject

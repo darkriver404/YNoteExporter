@@ -1,1 +1,0 @@
-oauth_token=45668913572831cfe2bec88a1b704038&oauth_token_secret=5fb5d3e6472cc83ad43084ec5f3e6bab

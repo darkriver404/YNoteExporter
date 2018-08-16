@@ -4,32 +4,33 @@ using UnityEngine;
 
 public class YNoteUtil
 {
-    /// <summary>
-    /// 有道云笔记的 domain
-    /// </summary>
-    public static readonly string baseUrl_test = "notesandbox.youdao.com"; //测试环境
-    public static readonly string baseUrl_online = "note.youdao.com"; //线上环境
+    public static string consumerKey
+    {
+        get { return ConfigMgr.Inst.appConfig.consumerKey; }
+    }
 
-    public static readonly string ownerId = "李晓天";
-    public static readonly string consumerName = "OrgDay";
-    public static readonly string consumerKey = "ba90f499d25a0c358f17fe937027c28b";
-    public static readonly string consumerSecret = "162d6ffe283111467de97f13f1e2e4a2";
+    public static string consumerSecret
+    {
+        get { return ConfigMgr.Inst.appConfig.consumerSecret; }
+    }
 
-    public static EnvironmentType CurrentEnvironment;
+    public static string baseUrl
+    {
+        get
+        {
+            switch (ConfigMgr.Inst.appConfig.environment)
+            {
+                default:
+                case EnvironmentType.Test:
+                    return ConfigMgr.Inst.appConfig.baseUrl_test;
+                case EnvironmentType.Online:
+                    return ConfigMgr.Inst.appConfig.baseUrl_online;
+            }
+        }
+    }
 
     public static string GetURL(string url)
     {
-        string baseUrl;
-        switch (CurrentEnvironment)
-        {
-            default:
-            case EnvironmentType.Test:
-                baseUrl = baseUrl_test;
-                break;
-            case EnvironmentType.Online:
-                baseUrl = baseUrl_online;
-                break;
-        }
         return url.Replace("[baseURL]", baseUrl);
     }
 

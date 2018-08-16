@@ -6,29 +6,11 @@ using OrgDay.Util;
 using YNote.Data;
 using YNote.Util;
 
-/// <summary>
-/// OAuth 版本
-/// </summary>
-public enum OAuthVersion
-{
-    oauth_1_0_a,
-    oauth_2_0,
-}
 
-/// <summary>
-/// 环境
-/// </summary>
-public enum EnvironmentType
-{
-    Test,   // 测试沙箱
-    Online, // 正式线上环境
-}
+
 
 public class YNoteExporter : MonoBehaviour
 {
-    public OAuthVersion oauthVersion;
-    public EnvironmentType environment;
-
     private long oauth_timestamp;
     public string oauth_token;
     public string oauth_token_secret;
@@ -48,11 +30,6 @@ public class YNoteExporter : MonoBehaviour
     void Update()
     {
         YNoteUtil.oauth_verifier = oauth_verifier;
-    }
-
-    public void UpdateEnvironment()
-    {
-        YNoteUtil.CurrentEnvironment = environment;
     }
 
     public void GetServerTime()

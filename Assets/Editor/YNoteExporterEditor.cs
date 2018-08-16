@@ -20,7 +20,6 @@ public class YNoteExporterEditor : Editor
         {
             return;
         }
-        Target.UpdateEnvironment();
 
         if (GUILayout.Button("ServerTime"))
         {

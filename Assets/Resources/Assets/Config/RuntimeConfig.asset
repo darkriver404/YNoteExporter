@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640f97840e0b5e84b8c8762eade8a39d, type: 3}
   m_Name: RuntimeConfig
   m_EditorClassIdentifier: 
-  saveToFile: 1
+  saveToFile: 0
